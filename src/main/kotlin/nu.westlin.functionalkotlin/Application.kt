@@ -26,8 +26,6 @@ class UserRepository {
     }
 }
 
-// TODO: Add class UserDetail and UserDetailRepository so the UserService has some "right to exist"?
-
 class UserService(private val repository: UserRepository) {
 
     fun getUser(name: String): User? = repository.get(name)
