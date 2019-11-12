@@ -35,16 +35,22 @@ internal class UserRepositoryTest {
 
     @Test
     fun `add a user`() {
-        repository.add(user3)
+        assertThat(repository.add(user3).fold(
+            { it },
+            { it }
+        )).isEqualTo(Unit)
 
         assertThat(repository.get(user3.name)).isEqualTo(user3)
     }
 
     @Test
     fun `add a user that already exist`() {
-        assertThatThrownBy { repository.add(user1) }
-            .isInstanceOf(IllegalArgumentException::class.java)
-            .hasMessage("User $user1 already exist.")
+        assertThat(repository.add(user1).fold(
+            { it },
+            { it }
+        )).isEqualTo(UserError.UserAlreadyExistError)
+
+        assertThat(repository.get(user3.name)).isNull()
     }
 
     @Test

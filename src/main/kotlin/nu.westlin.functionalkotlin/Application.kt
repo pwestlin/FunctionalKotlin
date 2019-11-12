@@ -20,11 +20,20 @@ class UserRepository {
     fun get(name: String): User? = users.firstOrNull { it.name == name }
 
     // TODO: Defer execution
-    fun add(user: User) {
+    fun add(user: User): Either<UserError.UserAlreadyExistError, Unit> {
+        return if (users.contains(user)) {
+            // TODO: Error message
+            Either.left(UserError.UserAlreadyExistError)
+        } else {
+            users.add(user)
+            Either.right(Unit)
+        }
+/*
         // TODO: Side effect
-        require(!users.contains(user)) { "User $user already exist." }
+        require() { "User $user already exist." }
         // TODO: Side effect
         users.add(user)
+*/
     }
 
     // TODO: Defer execution
@@ -47,7 +56,8 @@ class UserService(private val repository: UserRepository) {
 
     // TODO: Defer execution
     fun add(users: List<User>) {
-        users.forEach(repository::add)
+        // TODO: Fix call
+        //users.forEach(repository::add)
     }
 }
 
