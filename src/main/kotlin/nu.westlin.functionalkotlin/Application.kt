@@ -1,14 +1,5 @@
-@file:Suppress("unused")
-
 package nu.westlin.functionalkotlin
 
-/*
-interface Person {
-    val first: String
-    val last: String
-}
-data class PersonImpl(override val first: String, override val last: String): Person
-*/
 data class User(val name: String) {
     init {
         require(name.length in 6..16) { "Name has to be 6-16 characters long" }
