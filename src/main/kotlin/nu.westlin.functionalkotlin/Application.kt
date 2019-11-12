@@ -14,6 +14,7 @@ class UserRepository {
 
     fun all(): List<User> = users.toList()
 
+    // TODO: Value or null
     fun get(name: String): User? = users.firstOrNull { it.name == name }
 
     fun add(user: User) {
@@ -33,6 +34,7 @@ class UserRepository {
 
 class UserService(private val repository: UserRepository) {
 
+    // TODO: Value or null
     fun getUser(name: String): User? = repository.get(name)
     fun add(user: User) = add(listOf(user))
     fun add(users: List<User>) {
