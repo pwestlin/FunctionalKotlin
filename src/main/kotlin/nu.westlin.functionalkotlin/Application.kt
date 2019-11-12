@@ -12,11 +12,14 @@ data class User(val name: String) {
 class UserRepository {
     private val users = ArrayList<User>()
 
+    // TODO: Defer execution
     fun all(): List<User> = users.toList()
 
     // TODO: Value or null
+    // TODO: Defer execution
     fun get(name: String): User? = users.firstOrNull { it.name == name }
 
+    // TODO: Defer execution
     fun add(user: User) {
         // TODO: Side effect
         require(!users.contains(user)) { "User $user already exist." }
@@ -24,6 +27,7 @@ class UserRepository {
         users.add(user)
     }
 
+    // TODO: Defer execution
     fun remove(user: User) {
         // TODO: Side effect
         require(users.contains(user)) { "User $user does not exist." }
@@ -35,8 +39,13 @@ class UserRepository {
 class UserService(private val repository: UserRepository) {
 
     // TODO: Value or null
+    // TODO: Defer execution
     fun getUser(name: String): User? = repository.get(name)
+
+    // TODO: Defer execution
     fun add(user: User) = add(listOf(user))
+
+    // TODO: Defer execution
     fun add(users: List<User>) {
         users.forEach(repository::add)
     }
