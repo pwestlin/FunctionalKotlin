@@ -1,7 +1,6 @@
 package nu.westlin.functionalkotlin
 
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -46,24 +45,28 @@ internal class UserRepositoryTest {
     @Test
     fun `add a user that already exist`() {
         assertThat(repository.add(user1).fold(
-            { it },
+            { it.errorMessage },
             { it }
-        )).isEqualTo(UserError.UserAlreadyExistError)
+        )).isEqualTo("User $user1 already exist.")
 
         assertThat(repository.get(user3.name)).isNull()
     }
 
     @Test
     fun `remove a user`() {
-        repository.remove(user2)
+        assertThat(repository.remove(user2).fold(
+            { it },
+            { it }
+        )).isEqualTo(Unit)
 
         assertThat(repository.get(user2.name)).isNull()
     }
 
     @Test
     fun `remove a user that does not exist`() {
-        assertThatThrownBy { repository.remove(user3) }
-            .isInstanceOf(IllegalArgumentException::class.java)
-            .hasMessage("User $user3 does not exist.")
+        assertThat(repository.remove(user3).fold(
+            { it.errorMessage },
+            { it }
+        )).isEqualTo("User $user3 does not exist.")
     }
 }

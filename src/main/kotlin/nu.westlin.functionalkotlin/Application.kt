@@ -22,26 +22,21 @@ class UserRepository {
     // TODO: Defer execution
     fun add(user: User): Either<UserError.UserAlreadyExistError, Unit> {
         return if (users.contains(user)) {
-            // TODO: Error message
-            Either.left(UserError.UserAlreadyExistError)
+            Either.left(UserError.UserAlreadyExistError("User $user already exist."))
         } else {
             users.add(user)
             Either.right(Unit)
         }
-/*
-        // TODO: Side effect
-        require() { "User $user already exist." }
-        // TODO: Side effect
-        users.add(user)
-*/
     }
 
     // TODO: Defer execution
-    fun remove(user: User) {
-        // TODO: Side effect
-        require(users.contains(user)) { "User $user does not exist." }
-        // TODO: Side effect
-        users.remove(user)
+    fun remove(user: User): Either<UserError.UserDoesNotExistError, Unit> {
+        return if (users.contains(user)) {
+            users.remove(user)
+            Either.right(Unit)
+        } else {
+            Either.left(UserError.UserDoesNotExistError("User $user does not exist."))
+        }
     }
 }
 

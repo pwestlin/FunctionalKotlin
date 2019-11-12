@@ -1,8 +1,5 @@
 package nu.westlin.functionalkotlin
 
-// TODO: Name of file :)
-
-// TODO: Separate file for Either + its sealed classes
 sealed class Either<out A, out B> {
     internal abstract val isLeft: Boolean
     internal abstract val isRight: Boolean
