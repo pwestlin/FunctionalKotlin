@@ -21,6 +21,7 @@ functional_with_arrow | Functional implementation with [Arrow](https://arrow-kt.
  
 ### Reading
 * [Kotlin Functional Programming, Does it make sense?](https://jorgecastillo.dev/kotlin-fp-does-it-make-sense)
+* [Kotlin Dependency Injection with the Reader Monad](https://jorgecastillo.dev/kotlin-dependency-injection-with-the-reader-monad)
 * [Kotlin Functional Programming I - Monad Stack](https://jorgecastillo.dev/kotlin-fp-1-monad-stack)
 * [Kotlin Functional Programming II - Monad Transformers](https://jorgecastillo.dev/kotlin-fp-2-monad-transformers)
 
