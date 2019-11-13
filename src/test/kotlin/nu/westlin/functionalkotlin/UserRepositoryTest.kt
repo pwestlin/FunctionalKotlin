@@ -4,7 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-@Suppress("UNUSED_EXPRESSION")
+@Suppress("UNUSED_EXPRESSION", "UNCHECKED_CAST")
 internal class UserRepositoryTest {
 
     private lateinit var repository: UserRepository
@@ -20,17 +20,20 @@ internal class UserRepositoryTest {
 
     @Test
     fun `get all users`() {
-        assertThat(repository.all()).containsExactlyInAnyOrder(user1, user2)
+        assertThat(repository.all().fold({ it }, { it }) as List<User>).containsExactlyInAnyOrder(user1, user2)
     }
 
     @Test
     fun `get a user`() {
-        assertThat(repository.get(user1.name)).isEqualTo(user1)
+        assertThat(repository.get(user1.name).fold({ it }, { it })).isEqualTo(user1)
     }
 
     @Test
     fun `get a user that does not exist`() {
-        assertThat(repository.get("foo")).isNull()
+        repository.get("doesnotexist").fold({ it }, { it }).let { error ->
+            assertThat(error).isInstanceOf(UserError.UserDoesNotExistError::class.java)
+            assertThat((error as UserError.UserDoesNotExistError).errorMessage).isEqualTo("User with name doesnotexist does not exist")
+        }
     }
 
     @Test
@@ -40,7 +43,7 @@ internal class UserRepositoryTest {
             { it }
         )).isEqualTo(Unit)
 
-        assertThat(repository.get(user3.name)).isEqualTo(user3)
+        assertThat(repository.get(user3.name).fold({ it }, { it })).isEqualTo(user3)
     }
 
     @Test
@@ -50,7 +53,11 @@ internal class UserRepositoryTest {
             { it }
         )).isEqualTo("User $user1 already exist.")
 
-        assertThat(repository.get(user3.name)).isNull()
+        assertThat(
+            repository.get(user3.name).fold(
+                { it.errorMessage },
+                { it })
+        ).isEqualTo("User with name ${user3.name} does not exist")
     }
 
     @Test
@@ -60,7 +67,11 @@ internal class UserRepositoryTest {
             { it }
         )).isEqualTo(Unit)
 
-        assertThat(repository.get(user2.name)).isNull()
+        assertThat(
+            repository.get(user2.name).fold(
+                { it.errorMessage },
+                { it })
+        ).isEqualTo("User with name ${user2.name} does not exist")
     }
 
     @Test

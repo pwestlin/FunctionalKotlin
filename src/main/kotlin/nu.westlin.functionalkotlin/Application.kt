@@ -13,11 +13,14 @@ class UserRepository {
     private val users = ArrayList<User>()
 
     // TODO: Defer execution
-    fun all(): List<User> = users.toList()
+    fun all(): Either<UserError.UserFetchError, List<User>> = Either.right(users.toList())
 
-    // TODO: Value or null
     // TODO: Defer execution
-    fun get(name: String): User? = users.firstOrNull { it.name == name }
+    // TODO petves: Return Option (which I havent implemented...yet :) )
+    fun get(name: String): Either<UserError.UserDoesNotExistError, User> {
+        return users.firstOrNull { it.name == name }?.let { Either.right(it) }
+            ?: Either.left(UserError.UserDoesNotExistError("User with name $name does not exist"))
+    }
 
     // TODO: Defer execution
     fun add(user: User): Either<UserError.UserAlreadyExistError, Unit> {
@@ -42,9 +45,11 @@ class UserRepository {
 
 class UserService(private val repository: UserRepository, private val logger: Logger) {
 
-    // TODO: Value or null
     // TODO: Defer execution
-    fun getUser(name: String): User? = repository.get(name)
+    fun getAllUsers(): Either<UserError.UserFetchError, List<User>> = repository.all()
+
+    // TODO: Defer execution
+    fun getUser(name: String): Either<UserError.UserDoesNotExistError, User> = repository.get(name)
 
     // TODO: Defer execution
     fun add(user: User) = add(listOf(user))
@@ -71,6 +76,16 @@ class Presenter(private val service: UserService, private val logger: Logger) {
             { logger.info("All users added") }
         )
     }
+
+    fun printAllUsers() {
+        service.getAllUsers().fold(
+            { error -> logger.error(error.errorMessage) },
+            { users ->
+                logger.info("All users:")
+                users.forEach { logger.info("\t$it") }
+            }
+        )
+    }
 }
 
 fun main() {
@@ -80,5 +95,6 @@ fun main() {
     ).apply {
         addUsersAndPrintThem(listOf(User("foobar"), User("raboof")))
         addUsersAndPrintThem(listOf(User("komaklasse"), User("raboof")))
+        printAllUsers()
     }
 }

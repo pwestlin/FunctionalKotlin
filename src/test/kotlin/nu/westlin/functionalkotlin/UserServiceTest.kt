@@ -6,7 +6,7 @@ import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-@Suppress("UNUSED_EXPRESSION")
+@Suppress("UNUSED_EXPRESSION", "UNCHECKED_CAST")
 internal class UserServiceTest {
 
     private val repository = mockk<UserRepository>(relaxed = true)
@@ -54,7 +54,14 @@ internal class UserServiceTest {
     @Test
     fun `get a user`() {
         val user = user1
-        every { repository.get(user1.name) } returns user
-        assertThat(service.getUser(user.name)).isEqualTo(user)
+        every { repository.get(user1.name) } returns Either.right(user)
+        assertThat(service.getUser(user.name).fold({ it }, { it })).isEqualTo(user)
+    }
+
+    @Test
+    fun `get all users`() {
+        val users = listOf(user1, user2)
+        every { repository.all() } returns Either.right(users)
+        assertThat(service.getAllUsers().fold({ it }, { it }) as List<User>).containsExactlyInAnyOrder(user1, user2)
     }
 }

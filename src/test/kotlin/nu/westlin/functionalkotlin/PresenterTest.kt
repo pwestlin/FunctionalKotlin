@@ -47,4 +47,20 @@ internal class PresenterTest {
         }
         verify(exactly = 0) { logger.info(any()) }
     }
+
+    @Test
+    fun `print all users`() {
+        val users = listOf(user1, user2)
+        every { service.getAllUsers() } returns Either.Right(users)
+
+        presenter.printAllUsers()
+
+        verify {
+            service.getAllUsers()
+            logger.info("All users:")
+            logger.info("\t$user1")
+            logger.info("\t$user2")
+        }
+    }
+
 }
