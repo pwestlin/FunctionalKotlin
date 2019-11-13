@@ -13,7 +13,7 @@ class UserRepository {
     private val users = ArrayList<User>()
 
     // TODO: Defer execution
-    fun all(): Either<UserError.UserFetchError, List<User>> = Either.right(users.toList())
+    fun all(): () -> Either<UserError.UserFetchError, List<User>> = { Either.right(users.toList()) }
 
     // TODO: Defer execution
     // TODO petves: Return Option (which I havent implemented...yet :) )
@@ -46,7 +46,7 @@ class UserRepository {
 class UserService(private val repository: UserRepository, private val logger: Logger) {
 
     // TODO: Defer execution
-    fun getAllUsers(): Either<UserError.UserFetchError, List<User>> = repository.all()
+    fun getAllUsers(): () -> Either<UserError.UserFetchError, List<User>> = repository.all()
 
     // TODO: Defer execution
     fun getUser(name: String): Either<UserError.UserDoesNotExistError, User> = repository.get(name)
@@ -78,11 +78,16 @@ class Presenter(private val service: UserService, private val logger: Logger) {
     }
 
     fun printAllUsers() {
-        service.getAllUsers().fold(
+        // TODO petves: service.getAllUsers().map (which is not implemented...yet :) )
+        service.getAllUsers()().fold(
             { error -> logger.error(error.errorMessage) },
             { users ->
-                logger.info("All users:")
-                users.forEach { logger.info("\t$it") }
+                if (users.isEmpty()) {
+                    logger.info("No users")
+                } else {
+                    logger.info("All users:")
+                    users.forEach { logger.info("\t$it") }
+                }
             }
         )
     }
@@ -93,7 +98,9 @@ fun main() {
         service = UserService(repository = UserRepository(), logger = Logger<UserRepository>()),
         logger = Logger<Presenter>()
     ).apply {
+        printAllUsers()
         addUsersAndPrintThem(listOf(User("foobar"), User("raboof")))
+        printAllUsers()
         addUsersAndPrintThem(listOf(User("komaklasse"), User("raboof")))
         printAllUsers()
     }

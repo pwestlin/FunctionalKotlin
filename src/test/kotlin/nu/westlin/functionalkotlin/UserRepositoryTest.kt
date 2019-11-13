@@ -20,7 +20,7 @@ internal class UserRepositoryTest {
 
     @Test
     fun `get all users`() {
-        assertThat(repository.all().fold({ it }, { it }) as List<User>).containsExactlyInAnyOrder(user1, user2)
+        assertThat(repository.all()().fold({ it }, { it }) as List<User>).containsExactlyInAnyOrder(user1, user2)
     }
 
     @Test

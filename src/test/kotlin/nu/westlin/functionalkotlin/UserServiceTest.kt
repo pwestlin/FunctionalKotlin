@@ -61,7 +61,7 @@ internal class UserServiceTest {
     @Test
     fun `get all users`() {
         val users = listOf(user1, user2)
-        every { repository.all() } returns Either.right(users)
-        assertThat(service.getAllUsers().fold({ it }, { it }) as List<User>).containsExactlyInAnyOrder(user1, user2)
+        every { repository.all() } returns { Either.right(users) }
+        assertThat(service.getAllUsers()().fold({ it }, { it }) as List<User>).containsExactlyInAnyOrder(user1, user2)
     }
 }

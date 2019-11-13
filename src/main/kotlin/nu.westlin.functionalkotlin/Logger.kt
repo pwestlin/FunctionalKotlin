@@ -5,7 +5,7 @@ import nu.westlin.functionalkotlin.Logger.Level.INFO
 import java.time.Instant
 import kotlin.reflect.KClass
 
-private const val CLASS_NAME_WIDTH = 25
+private const val CLASS_NAME_WIDTH = 20
 
 // Why not implement my own Logger... :)
 class Logger(private val clazz: KClass<*>) {
@@ -23,7 +23,7 @@ class Logger(private val clazz: KClass<*>) {
     }
 
     private fun log(msg: String, level: Level) {
-        println("${Instant.now()} [${className(clazz)}] $level: $msg - ${Thread.currentThread()}")
+        println("${Instant.now()} [${className(clazz)}] ${level.toString().padEnd(ERROR.toString().length)}: $msg - ${Thread.currentThread()}")
     }
 
     private fun className(clazz: KClass<*>): String {

@@ -51,7 +51,7 @@ internal class PresenterTest {
     @Test
     fun `print all users`() {
         val users = listOf(user1, user2)
-        every { service.getAllUsers() } returns Either.Right(users)
+        every { service.getAllUsers() } returns { Either.Right(users) }
 
         presenter.printAllUsers()
 
