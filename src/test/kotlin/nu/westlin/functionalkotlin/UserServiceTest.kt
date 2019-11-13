@@ -6,10 +6,13 @@ import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
+@Suppress("UNUSED_EXPRESSION")
 internal class UserServiceTest {
 
     private val repository = mockk<UserRepository>(relaxed = true)
-    private val service = UserService(repository)
+    private val logger = mockk<Logger>(relaxed = true)
+
+    private val service = UserService(repository, logger)
 
     @Test
     fun `add one user`() {
@@ -29,7 +32,10 @@ internal class UserServiceTest {
 
         assertThat(service.add(user).fold({ it.errorMessage }, { it })).isEqualTo(errorMessage)
 
-        verify { repository.add(user) }
+        verify {
+            repository.add(user)
+            logger.error(errorMessage)
+        }
     }
 
     @Test

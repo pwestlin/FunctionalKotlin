@@ -1,5 +1,6 @@
 package nu.westlin.functionalkotlin
 
+import io.mockk.clearMocks
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -8,7 +9,8 @@ import org.junit.jupiter.api.Test
 internal class PresenterTest {
 
     private val service = mockk<UserService>(relaxed = true)
-    private val presenter = Presenter(service)
+    private val logger = mockk<Logger>(relaxed = true)
+    private val presenter = Presenter(service, logger)
 
     @Test
     fun `add two users and print them`() {
@@ -17,22 +19,32 @@ internal class PresenterTest {
 
         presenter.addUsersAndPrintThem(users)
 
-        verify { service.add(users) }
-
-        // println is not possible to verify...
+        verify {
+            service.add(users)
+            logger.info("All users added")
+        }
     }
 
     @Test
     fun `add two users and print them when a user already exist`() {
         val users = listOf(user1)
-        every { service.add(users) } returns Either.Right(Unit) andThen Either.Left(UserError.UserAlreadyExistError("User $user1 already exist"))
+        val errorMessage = "User $user1 already exist"
+        every { service.add(users) } returns Either.Right(Unit)
 
         presenter.addUsersAndPrintThem(users)
-        verify { service.add(users) }
+        verify {
+            service.add(users)
+            logger.info("All users added")
+        }
+        verify(exactly = 0) { logger.error(any()) }
 
+        clearMocks(logger, service)
+        every { service.add(users) } returns Either.Left(UserError.UserAlreadyExistError(errorMessage))
         presenter.addUsersAndPrintThem(users)
-        verify { service.add(users) }
-
-        // println is not possible to verify...
+        verify {
+            service.add(users)
+            logger.error(errorMessage)
+        }
+        verify(exactly = 0) { logger.info(any()) }
     }
 }

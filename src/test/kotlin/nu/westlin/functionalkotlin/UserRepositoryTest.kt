@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
+@Suppress("UNUSED_EXPRESSION")
 internal class UserRepositoryTest {
 
     private lateinit var repository: UserRepository

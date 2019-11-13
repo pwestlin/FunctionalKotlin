@@ -40,7 +40,7 @@ class UserRepository {
     }
 }
 
-class UserService(private val repository: UserRepository) {
+class UserService(private val repository: UserRepository, private val logger: Logger) {
 
     // TODO: Value or null
     // TODO: Defer execution
@@ -50,10 +50,11 @@ class UserService(private val repository: UserRepository) {
     fun add(user: User) = add(listOf(user))
 
     // TODO: Defer execution
+    @Suppress("UNUSED_EXPRESSION")
     fun add(users: List<User>): Either<UserError.UserAlreadyExistError, Unit> {
         users.forEach { user ->
             repository.add(user).fold(
-                { error -> println("Error: ${error.errorMessage}"); return Either.Left(error) },
+                { error -> logger.error(error.errorMessage); return Either.Left(error) },
                 { it }
             )
         }
@@ -62,17 +63,21 @@ class UserService(private val repository: UserRepository) {
     }
 }
 
-class Presenter(private val service: UserService) {
+class Presenter(private val service: UserService, private val logger: Logger) {
+
     fun addUsersAndPrintThem(users: List<User>) {
         service.add(users).fold(
-            { error -> println("Error adding user: ${error.errorMessage}") },
-            { println("All users added") }
+            { error -> logger.error(error.errorMessage) },
+            { logger.info("All users added") }
         )
     }
 }
 
 fun main() {
-    Presenter(UserService(UserRepository())).apply {
+    Presenter(
+        service = UserService(repository = UserRepository(), logger = Logger<UserRepository>()),
+        logger = Logger<Presenter>()
+    ).apply {
         addUsersAndPrintThem(listOf(User("foobar"), User("raboof")))
         addUsersAndPrintThem(listOf(User("komaklasse"), User("raboof")))
     }
