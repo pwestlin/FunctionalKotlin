@@ -1,5 +1,6 @@
 package nu.westlin.functionalkotlin
 
+import arrow.core.Either
 import io.mockk.clearMocks
 import io.mockk.every
 import io.mockk.mockk

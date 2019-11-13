@@ -1,5 +1,7 @@
 package nu.westlin.functionalkotlin
 
+import arrow.core.Either
+
 data class User(val name: String) {
     init {
         // TODO: Side effect
