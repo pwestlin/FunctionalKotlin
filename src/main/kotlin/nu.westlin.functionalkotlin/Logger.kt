@@ -1,7 +1,6 @@
 package nu.westlin.functionalkotlin
 
-import nu.westlin.functionalkotlin.Logger.Level.ERROR
-import nu.westlin.functionalkotlin.Logger.Level.INFO
+import nu.westlin.functionalkotlin.Logger.Level.*
 import java.time.Instant
 import kotlin.reflect.KClass
 
@@ -11,7 +10,11 @@ private const val CLASS_NAME_WIDTH = 20
 class Logger(private val clazz: KClass<*>) {
 
     private enum class Level {
-        INFO, ERROR
+        DEBUG, INFO, ERROR
+    }
+
+    fun debug(msg: String) {
+        log(msg, DEBUG)
     }
 
     fun info(msg: String) {
