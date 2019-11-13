@@ -77,6 +77,7 @@ class Presenter(private val service: UserService, private val logger: Logger) {
 
     fun printAllUsers() {
         // TODO petves: service.getAllUsers().map (which is not implemented...yet :) )
+        // The execution of all functions "downstream" (service + repository) is executed here, namely at the ()-function invocation
         service.getAllUsers()().fold(
             { error -> logger.error(error.errorMessage) },
             { users ->
