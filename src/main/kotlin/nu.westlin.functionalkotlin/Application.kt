@@ -12,7 +12,6 @@ data class User(val name: String) {
 class UserRepository {
     private val users = ArrayList<User>()
 
-    // TODO: Defer execution
     fun all(): () -> Either<UserError.UserFetchError, List<User>> = { Either.right(users.toList()) }
 
     // TODO: Defer execution
@@ -45,7 +44,6 @@ class UserRepository {
 
 class UserService(private val repository: UserRepository, private val logger: Logger) {
 
-    // TODO: Defer execution
     fun getAllUsers(): () -> Either<UserError.UserFetchError, List<User>> = repository.all()
 
     // TODO: Defer execution
